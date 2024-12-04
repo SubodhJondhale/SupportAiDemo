@@ -1,56 +1,217 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" sizes="192x192" href="https://studio.d-id.com/favicon/favicon-192x192.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-  <title>D-ID Agents SDK Demo</title>
+  <title>Responsive Video Chat UI</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body,
+    html {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #container {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    video#videoElement {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+
+    }
+
+    .header {
+      position: absolute;
+      top: 7px;
+      left: -10px;
+      display: flex;
+      align-items: center;
+      /* background-color: rgba(0, 0, 0, 0.5); */
+      padding: 3px 5px;
+      border-radius: 20px;
+      color: black;
+      font-size: 14px;
+      z-index: 10;
+      gap: 2px;
+    }
+
+    .header span {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .header span .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    #answers {
+  position: fixed;
+  bottom: 60px; /* Ensure it starts above the input field */
+  left: 0;
+  right: 0;
+  padding: 10px;
+  overflow-y: auto; /* Enables scrolling if content exceeds max-height */
+  display: flex;
+  flex-direction: column-reverse; /* Ensures content grows from bottom to top */
+  max-height: 40vh; 
+  margin: 20px 20px;
+   /* Ensures background only applies to the content area */
+  border-radius: 15px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5); /* Background color only applied to content */
+}
+
+#answersOuter{
+  /* background-color: rgba(0, 0, 0, 0.5);  */
+  max-height: 40vh; 
+}
+    #answers::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #answers::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+    }
+
+
+    .inputsDiv {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+
+    textarea#textArea {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      resize: none;
+      height: 40px;
+      outline: none;
+    }
+
+    button {
+      padding: 10px;
+      border: none;
+      border-radius: 50%;
+      background-color: #2196F3;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    button:hover {
+      background-color: #1976D2;
+    }
+
+    button .material-symbols-outlined {
+      font-size: 24px;
+    }
+  </style>
 </head>
 
 <body>
   <div id="container">
+    <!-- Video Background -->
+    <video id="videoElement" autoplay loop muted playsinline></video>
+
+    <!-- Header -->
     <div class="header">
-      <span id="previewName">Your Agent</span>
+      <span>
+      <span id = "previewName" >Agent</span>    
+      </span>
       <span id="connectionLabel">Connecting..</span>
     </div>
 
-    <div>
-      <video id="videoElement" autoplay loop></video>
+    <!-- Answers Section -->
+    <div id="answersOuter">
+     <div id="answers"></div>
     </div>
 
-    <div>
-      <button id="chatButton" title="agentManager.chat() -> Communicate with your Agent (D-ID LLM)">Chat</button>
-      <button id="speakButton" title="agentManager.speak() -> Streaming API (Bring your own LLM)">Speak</button>
-    </div>
-
+    <!-- Input Field -->
     <div class="inputsDiv">
       <textarea id="textArea" placeholder="Type a message" autofocus></textarea>
+      <button id="GoButton" title="find ans for txtfeild value">
+        <span class="material-symbols-outlined">send</span>
+      </button>
+      <button id="speechButton" title="Speech to Text - Web Speech API (MDN)">
+        <span class="material-symbols-outlined">mic</span>
+      </button>
     </div>
-    <div style="display: flex;">
-
-      <select id="langSelect" title="Speech to Text - Language Selection">
-        <option value="en_US" disabled selected>TTS Language</option>
-        <option value="en_US" default>English</option>
-        <option value="es_ES">Spanish</option>
-        <option value="fr_FR">French</option>
-        <option value="it_IT">Italian</option>
-        <option value="de_DE">German</option>
-        <option value="he_IL">Hebrew</option>
-        <option value="ru_RU">Russian</option>
-      </select>
-      <button id="speechButton" title="Speech to Text - Web Speech API (MDN)">&#127908;</button>
-    </div>
-
-
-    <div id="answers"></div>
   </div>
-  <div id="hidden" style="display: none;">
-    <h2 id="hidden_h2"></h2>
-    <button id="reconnectButton"
-      title="agentManager.reconnect() -> Reconnects the previous WebRTC session">Reconnect</button>
-  </div>
-  <script type="module" src="/main.js"></script>
-  <script src="webSpeechAPI.js"></script>
+
+  <script>
+    // const answersDiv = document.getElementById('answers');
+    // const textArea = document.getElementById('textArea');
+    // const goButton = document.getElementById('GoButton');
+
+    // Scroll answers to the bottom by default
+    // function scrollToBottom() {
+    //   answersDiv.scrollTop = answersDiv.scrollHeight;
+    // }
+
+    // // Add content dynamically
+    // function addMessage(message) {
+    //   const messageElement = document.createElement('div');
+    //   messageElement.textContent = message;
+    //   messageElement.style.marginBottom = '10px';
+    //   messageElement.style.wordWrap = 'break-word';
+    //   answersDiv.prepend(messageElement); // Add to the bottom
+    //   scrollToBottom();
+    // }
+
+    // Button click event to add new message
+    // goButton.addEventListener('click', () => {
+    //   const message = textArea.value.trim();
+    //   if (message) {
+    //     addMessage(message);
+    //     textArea.value = ''; // Clear input
+    //   }
+    // });
+
+    // Example for testing
+    //setInterval(() => addMessage('New message from agent...'), 3000);
+  </script>
+
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script type="module" src="/main.js"></script>
+<script src="webSpeechAPI.js"></script>
 </body>
+
 </html>

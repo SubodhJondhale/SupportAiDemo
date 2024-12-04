@@ -1,24 +1,24 @@
-var recognizing;
+var recognizing = false;
 
-if (navigator.userAgent.includes("Firefox")) {
-  recognition = new SpeechRecognition()
-} else {
-  recognition = new webkitSpeechRecognition()
-}
-recognition.lang = langSelect.value
-recognition.continuous = true;
-reset();
-recognition.onend = reset;
+// if (navigator.userAgent.includes("Firefox")) {
+//   recognition = new SpeechRecognition()
+// } else {
+//   recognition = new webkitSpeechRecognition()
+// }
+// recognition.lang = langSelect.value
+// recognition.continuous = true;
+// reset();
+// recognition.onend = reset;
 
-recognition.onresult = function (event) {
-  console.log(event)
-  for (var i = event.resultIndex; i < event.results.length; ++i) {
-    if (event.results[i].isFinal) {
-      console.log("..")
-      textArea.value += event.results[i][0].transcript;
-    }
-  }
-}
+// recognition.onresult = function (event) {
+//   console.log(event)
+//   for (var i = event.resultIndex; i < event.results.length; ++i) {
+//     if (event.results[i].isFinal) {
+//       console.log("..")
+//       textArea.value += event.results[i][0].transcript;
+//     }
+//   }
+// }
 
 function reset() {
   recognizing = false;
@@ -29,20 +29,36 @@ function reset() {
 
 }
 
-function toggleStartStop() {
-  recognition.lang = langSelect.value
-  if (recognizing) {
-    textArea.focus()
-    recognition.stop();
-    reset();
-  } else {
-    textArea.value = ""
-    recognition.start();
-    recognizing = true;
-    speechButton.style.color = "red"
-    speechButton.innerHTML = "&#x23F9;"
-    chatButton.setAttribute("disabled", true)
-    speakButton.setAttribute("disabled", true)
+// function toggleStartStop() {
+//   recognition.lang = langSelect.value
+//   if (recognizing) {
+//     textArea.focus()
+//     recognition.stop();
+//     reset();
+//   } else {
+//     textArea.value = ""
+//     recognition.start();
+//     recognizing = true;
+//     speechButton.style.color = "red"
+//     speechButton.innerHTML = "&#x23F9;"
+//     chatButton.setAttribute("disabled", true)
+//     speakButton.setAttribute("disabled", true)
 
+//   }
+//}
+  function toggleStartStop() {
+    if (recognizing) {
+      textArea.focus();
+      window.webkit.messageHandlers.speechRecognition.postMessage({ command: "stop" });
+      reset();
+    } else {
+      textArea.value = "";
+      window.webkit.messageHandlers.speechRecognition.postMessage({ command: "start" });
+      recognizing = true;
+      speechButton.style.color = "red";
+      speechButton.innerHTML = "&#x23F9;";
+      chatButton.setAttribute("disabled", true);
+      speakButton.setAttribute("disabled", true);
+      
+    }
   }
-}

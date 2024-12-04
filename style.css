@@ -50,10 +50,10 @@ div {
     width: 100%;
 }
 
-#answers {
+/* #answers {
     height: 450px;
     overflow: scroll;
-}
+} */
 
 #hidden {
     text-align: center;
@@ -65,12 +65,4 @@ div {
 
 #speechButton:disabled {
     color: rgba(16, 16, 16, 0.3)
-}
-
-#videoElement {
-    width: 250px;
-    height: 250px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
 }
